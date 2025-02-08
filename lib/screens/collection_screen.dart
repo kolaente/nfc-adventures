@@ -29,7 +29,7 @@ class CollectionScreen extends StatelessWidget {
               title: Text(tag.name),
               subtitle: Text('UID: ${tag.uid}'),
               trailing: Text(
-                '${tag.scannedAt.day}/${tag.scannedAt.month}/${tag.scannedAt.year} ${tag.scannedAt.hour}:${tag.scannedAt.minute.toString().padLeft(2, '0')}:${tag.scannedAt.second.toString().padLeft(2, '0')}',
+                '${tag.scannedAt.year}-${tag.scannedAt.month.toString().padLeft(2, '0')}-${tag.scannedAt.day.toString().padLeft(2, '0')} ${tag.scannedAt.hour.toString().padLeft(2, '0')}:${tag.scannedAt.minute.toString().padLeft(2, '0')}:${tag.scannedAt.second.toString().padLeft(2, '0')}',
               ),
             );
           },
