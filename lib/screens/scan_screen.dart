@@ -35,6 +35,12 @@ class _ScanScreenState extends State<ScanScreen> {
               setState(() {
                 _lastScannedTag = tag;
               });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Tag scanned: ${tag.name}'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
             }
           },
         );
@@ -47,17 +53,11 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('Hold your tag near the reader...'),
-          if (_lastScannedTag != null)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                  'Last scanned: ${_lastScannedTag!.name} (${_lastScannedTag!.uid})'),
-            ),
+          Text('Hold your tag near the reader...'),
         ],
       ),
     );
