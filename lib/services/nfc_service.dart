@@ -8,11 +8,11 @@ import '../services/storage_service.dart';
 class NfcService {
   final StorageService _storageService = StorageService();
 
-  Future<ScannedNfcTag?> readNfcTag() async {
+  Future<void> readNfcTag(
+      {required Function(ScannedNfcTag) onTagScanned}) async {
     bool isAvailable = await NfcManager.instance.isAvailable();
-    if (!isAvailable) return null;
+    if (!isAvailable) return;
 
-    String? tagId;
     await NfcManager.instance.startSession(
         pollingOptions: {
           NfcPollingOption.iso14443,
@@ -20,6 +20,7 @@ class NfcService {
         },
         alertMessage: 'Hold your device near the NFC tag',
         onDiscovered: (NfcTag nfcTag) async {
+          String? tagId;
           var tech = NfcA.from(nfcTag);
           if (tech is NfcA) {
             tagId = tech.identifier
@@ -32,30 +33,20 @@ class NfcService {
             return;
           }
 
-          print("found tag: $tagId");
-
           final tagNames = await TagNamesService.loadTagNames();
           final name = tagNames[tagId] ?? 'Unknown Tag';
 
           final tag = ScannedNfcTag(
-            uid: tagId!,
+            uid: tagId,
             name: name,
             scannedAt: DateTime.now(),
           );
 
           await _storageService.saveCollectedTag(tag);
-        });
+          onTagScanned(tag);
 
-    if (tagId != null) {
-      final tagNames = await TagNamesService.loadTagNames();
-      final name = tagNames[tagId] ?? 'Unknown Tag';
-      return ScannedNfcTag(
-        uid: tagId!,
-        name: name,
-        scannedAt: DateTime.now(),
-      );
-    }
-    return null;
+          print("found tag: $tagId");
+        });
   }
 
   Future<void> stopScanning() async {

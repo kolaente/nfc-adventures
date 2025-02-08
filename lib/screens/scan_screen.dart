@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../models/nfc_tag.dart';
 import '../services/nfc_service.dart';
 
 class ScanScreen extends StatefulWidget {
@@ -10,7 +12,7 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final NfcService _nfcService = NfcService();
-  String? _lastScannedTag;
+  ScannedNfcTag? _lastScannedTag;
 
   @override
   void initState() {
@@ -27,11 +29,17 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<void> _startContinuousScanning() async {
     while (mounted) {
       try {
-        await _nfcService.readNfcTag();
-        // Add a small delay to prevent excessive scanning
+        await _nfcService.readNfcTag(
+          onTagScanned: (tag) {
+            if (mounted) {
+              setState(() {
+                _lastScannedTag = tag;
+              });
+            }
+          },
+        );
         await Future.delayed(const Duration(milliseconds: 500));
       } catch (e) {
-        // Handle any errors silently and continue scanning
         await Future.delayed(const Duration(seconds: 1));
       }
     }
@@ -47,7 +55,8 @@ class _ScanScreenState extends State<ScanScreen> {
           if (_lastScannedTag != null)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('Last scanned: $_lastScannedTag'),
+              child: Text(
+                  'Last scanned: ${_lastScannedTag!.name} (${_lastScannedTag!.uid})'),
             ),
         ],
       ),
