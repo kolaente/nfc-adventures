@@ -9,7 +9,7 @@ class CollectionScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<NfcTag>>(
+    return FutureBuilder<List<ScannedNfcTag>>(
       future: _storageService.getCollectedTags(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -29,7 +29,7 @@ class CollectionScreen extends StatelessWidget {
               title: Text(tag.name),
               subtitle: Text('UID: ${tag.uid}'),
               trailing: Text(
-                '${tag.scannedAt.day}/${tag.scannedAt.month}/${tag.scannedAt.year}',
+                '${tag.scannedAt.day}/${tag.scannedAt.month}/${tag.scannedAt.year} ${tag.scannedAt.hour}:${tag.scannedAt.minute.toString().padLeft(2, '0')}:${tag.scannedAt.second.toString().padLeft(2, '0')}',
               ),
             );
           },

@@ -13,32 +13,36 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   final StorageService _storageService = StorageService();
+  final NfcService _nfcService = NfcService();
   bool _isScanning = false;
   String? _lastScannedTag;
 
-  Future<void> _scanTag() async {
+  @override
+  void initState() {
+    super.initState();
+    _startContinuousScanning();
+  }
+
+  @override
+  void dispose() {
+    _nfcService.stopScanning();
+    super.dispose();
+  }
+
+  Future<void> _startContinuousScanning() async {
     setState(() {
       _isScanning = true;
-      _lastScannedTag = null;
     });
 
-    try {
-      final String? tagId = await NfcService.readNfcTag();
-      if (tagId != null) {
-        final tagNames = await TagNamesService.loadTagNames();
-        final name = tagNames[tagId] ?? 'Unknown Tag';
-
-        final tag = NfcTag(
-          uid: tagId,
-          name: name,
-          scannedAt: DateTime.now(),
-        );
-
-        await _storageService.saveCollectedTag(tag);
-        setState(() => _lastScannedTag = name);
+    while (mounted) {
+      try {
+        await _nfcService.readNfcTag();
+        // Add a small delay to prevent excessive scanning
+        await Future.delayed(const Duration(milliseconds: 500));
+      } catch (e) {
+        // Handle any errors silently and continue scanning
+        await Future.delayed(const Duration(seconds: 1));
       }
-    } finally {
-      setState(() => _isScanning = false);
     }
   }
 
@@ -48,10 +52,7 @@ class _ScanScreenState extends State<ScanScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-            onPressed: _isScanning ? null : _scanTag,
-            child: Text(_isScanning ? 'Scanning...' : 'Scan NFC Tag'),
-          ),
+          const Text('Hold your tag near the reader...'),
           if (_lastScannedTag != null)
             Padding(
               padding: const EdgeInsets.all(16.0),

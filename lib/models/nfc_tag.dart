@@ -1,9 +1,9 @@
-class NfcTag {
+class ScannedNfcTag {
   final String uid;
   final String name;
   final DateTime scannedAt;
 
-  NfcTag({
+  ScannedNfcTag({
     required this.uid,
     required this.name,
     required this.scannedAt,
@@ -17,8 +17,8 @@ class NfcTag {
     };
   }
 
-  factory NfcTag.fromJson(Map<String, dynamic> json) {
-    return NfcTag(
+  factory ScannedNfcTag.fromJson(Map<String, dynamic> json) {
+    return ScannedNfcTag(
       uid: json['uid'],
       name: json['name'],
       scannedAt: DateTime.parse(json['scannedAt']),
