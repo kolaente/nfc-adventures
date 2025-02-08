@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../services/nfc_service.dart';
-import '../services/storage_service.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -10,7 +9,6 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  final StorageService _storageService = StorageService();
   final NfcService _nfcService = NfcService();
   String? _lastScannedTag;
 
