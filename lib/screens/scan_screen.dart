@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/nfc_service.dart';
 import '../services/storage_service.dart';
-import '../services/tag_names_service.dart';
-import '../models/nfc_tag.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -14,7 +12,6 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   final StorageService _storageService = StorageService();
   final NfcService _nfcService = NfcService();
-  bool _isScanning = false;
   String? _lastScannedTag;
 
   @override
@@ -30,10 +27,6 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> _startContinuousScanning() async {
-    setState(() {
-      _isScanning = true;
-    });
-
     while (mounted) {
       try {
         await _nfcService.readNfcTag();
