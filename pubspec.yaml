@@ -56,6 +56,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/tag_images/
     - assets/tags.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
