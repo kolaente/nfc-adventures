@@ -19,10 +19,10 @@ class CollectionScreen extends StatelessWidget {
       ]).then((results) async {
         final collectedTags = results[0] as List<ScannedNfcTag>;
         final allTags = results[1] as Map<String, String>;
-        
+
         // Initialize image paths
         await ImagePathService.initializeImagePaths(allTags.keys.toSet());
-        
+
         return {
           'collectedTags': collectedTags,
           'allTags': allTags,
@@ -37,7 +37,8 @@ class CollectionScreen extends StatelessWidget {
           return const Center(child: Text('Error loading tags'));
         }
 
-        final collectedTags = snapshot.data!['collectedTags'] as List<ScannedNfcTag>;
+        final collectedTags =
+            snapshot.data!['collectedTags'] as List<ScannedNfcTag>;
         final allTags = snapshot.data!['allTags'] as Map<String, String>;
         final collectedTagIds = collectedTags.map((t) => t.uid).toSet();
 
@@ -58,17 +59,19 @@ class CollectionScreen extends StatelessWidget {
             return Card(
               clipBehavior: Clip.antiAlias,
               child: InkWell(
-                onTap: isCollected ? () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TagDetailScreen(
-                        tagId: tagId,
-                        tagName: tagName,
-                      ),
-                    ),
-                  );
-                } : null,
+                onTap: isCollected
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TagDetailScreen(
+                              tagId: tagId,
+                              tagName: tagName,
+                            ),
+                          ),
+                        );
+                      }
+                    : null,
                 child: ColorFiltered(
                   colorFilter: isCollected
                       ? const ColorFilter.mode(
@@ -76,10 +79,26 @@ class CollectionScreen extends StatelessWidget {
                           BlendMode.saturation,
                         )
                       : const ColorFilter.matrix([
-                          0.2126, 0.7152, 0.0722, 0, 0,
-                          0.2126, 0.7152, 0.0722, 0, 0,
-                          0.2126, 0.7152, 0.0722, 0, 0,
-                          0, 0, 0, 1, 0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0.2126,
+                          0.7152,
+                          0.0722,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
                         ]),
                   child: Stack(
                     fit: StackFit.expand,
@@ -104,7 +123,7 @@ class CollectionScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
+                    ],
                   ),
                 ),
               ),
@@ -116,6 +135,7 @@ class CollectionScreen extends StatelessWidget {
   }
 
   String _getTagImagePath(String tagId) {
-    return ImagePathService.getImagePath(tagId) ?? 'assets/tag_images/$tagId.png';
+    return ImagePathService.getImagePath(tagId) ??
+        'assets/tag_images/$tagId.png';
   }
 }

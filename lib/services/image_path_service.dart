@@ -29,4 +29,4 @@ class ImagePathService {
   static String? getImagePath(String tagId) {
     return _imagePathCache[tagId];
   }
-} 
+}

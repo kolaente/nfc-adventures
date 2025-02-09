@@ -37,6 +37,7 @@ class TagDetailScreen extends StatelessWidget {
   }
 
   String _getTagImagePath(String tagId) {
-    return ImagePathService.getImagePath(tagId) ?? 'assets/tag_images/$tagId.png';
+    return ImagePathService.getImagePath(tagId) ??
+        'assets/tag_images/$tagId.png';
   }
-} 
+}
