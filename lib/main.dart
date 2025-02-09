@@ -3,17 +3,17 @@ import 'screens/scan_screen.dart';
 import 'screens/collection_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const NfcCollectorApp());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class NfcCollectorApp extends StatefulWidget {
+  const NfcCollectorApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState();
+  State<NfcCollectorApp> createState() => _NfcCollectorAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _NfcCollectorAppState extends State<NfcCollectorApp> {
   ThemeMode _themeMode = ThemeMode.system;
 
   void toggleTheme() {
