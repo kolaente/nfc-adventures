@@ -7,9 +7,11 @@ import '../services/storage_service.dart';
 
 class NfcService {
   final StorageService _storageService = StorageService();
+  final String adventurePath;
 
-  Future<void> readNfcTag(
-      {required Function(ScannedNfcTag) onTagScanned}) async {
+  NfcService({required this.adventurePath});
+
+  Future<void> readNfcTag({required Function(ScannedNfcTag) onTagScanned}) async {
     bool isAvailable = await NfcManager.instance.isAvailable();
     if (!isAvailable) return;
 
@@ -33,7 +35,7 @@ class NfcService {
             return;
           }
 
-          final tagNames = await TagNamesService.loadTagNames();
+          final tagNames = await TagNamesService.loadTagNames(adventurePath);
           final name = tagNames[tagId] ?? 'Unknown Tag';
 
           final tag = ScannedNfcTag(

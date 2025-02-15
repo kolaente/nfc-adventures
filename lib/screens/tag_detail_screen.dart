@@ -21,23 +21,13 @@ class TagDetailScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
-            child: Image.asset(
-              _getTagImagePath(tagId),
+            child: ImagePathService.getImage(
+              tagId,
               fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(
-                  child: Icon(Icons.broken_image, size: 48),
-                );
-              },
             ),
           ),
         ],
       ),
     );
-  }
-
-  String _getTagImagePath(String tagId) {
-    return ImagePathService.getImagePath(tagId) ??
-        'assets/tag_images/$tagId.png';
   }
 }

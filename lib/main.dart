@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/scan_screen.dart';
 import 'screens/collection_screen.dart';
+import 'screens/adventure_selection_screen.dart';
+import 'services/adventure_service.dart';
 
 void main() {
   runApp(const NfcCollectorApp());
@@ -15,6 +17,80 @@ class NfcCollectorApp extends StatefulWidget {
 
 class _NfcCollectorAppState extends State<NfcCollectorApp> {
   ThemeMode _themeMode = ThemeMode.system;
+  final AdventureService _adventureService = AdventureService();
+  String? _currentAdventurePath;
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkCurrentAdventure();
+  }
+
+  Future<void> _checkCurrentAdventure() async {
+    print("Checking current adventure");
+    if (!mounted) return;
+    
+    setState(() {
+      _isLoading = true;
+    });
+    
+    try {
+      final currentAdventureId = await _adventureService.getCurrentAdventure();
+      print("Current adventure ID: $currentAdventureId");
+      
+      if (currentAdventureId != null) {
+        final isReady = await _adventureService.isAdventureReady(currentAdventureId);
+        print("Adventure ready: $isReady");
+        
+        if (isReady) {
+          final path = await _adventureService.getAdventurePath(currentAdventureId);
+          print("Adventure path: $path");
+          if (!mounted) return;
+          setState(() {
+            _currentAdventurePath = path;
+            _isLoading = false;
+          });
+          return;
+        }
+      }
+      
+      print("No adventure ready");
+      if (!mounted) return;
+      setState(() {
+        _currentAdventurePath = null;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print("Error checking adventure: $e");
+      if (!mounted) return;
+      setState(() {
+        _currentAdventurePath = null;
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _showAdventureSelection(BuildContext context) async {
+    if (!mounted) return;
+    
+    print("Showing adventure selection");
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => AdventureSelectionScreen(
+          onAdventureSelected: _handleAdventureSelected,
+          themeMode: _themeMode,
+        ),
+        settings: RouteSettings(name: _currentAdventurePath == null ? '/' : '/select'),
+      ),
+    );
+
+    print("Adventure selection result: $result");
+    if (result == true) {
+      await _checkCurrentAdventure();
+    }
+  }
 
   void toggleTheme() {
     setState(() {
@@ -23,8 +99,16 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
     });
   }
 
+  void _handleAdventureSelected(String adventurePath) {
+    setState(() {
+      _currentAdventurePath = adventurePath;
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("Building main app. isLoading: $_isLoading, path: $_currentAdventurePath");
     return MaterialApp(
       title: 'NFC Tag Collector',
       theme: ThemeData(
@@ -43,14 +127,45 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
         ),
       ),
       themeMode: _themeMode,
-      home: MainScreen(toggleTheme: toggleTheme),
+      home: Builder(
+        builder: (context) {
+          if (_isLoading) {
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          if (_currentAdventurePath == null) {
+            print("Current adventure path is null");
+            return AdventureSelectionScreen(
+              onAdventureSelected: _handleAdventureSelected,
+              themeMode: _themeMode,
+            );
+          }
+
+          return MainScreen(
+            toggleTheme: toggleTheme,
+            adventurePath: _currentAdventurePath!,
+            onSelectNewAdventure: () => _showAdventureSelection(context),
+          );
+        },
+      ),
     );
   }
 }
 
 class MainScreen extends StatefulWidget {
   final VoidCallback toggleTheme;
-  const MainScreen({super.key, required this.toggleTheme});
+  final String adventurePath;
+  final VoidCallback onSelectNewAdventure;
+  const MainScreen({
+    super.key,
+    required this.toggleTheme,
+    required this.adventurePath,
+    required this.onSelectNewAdventure,
+  });
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -59,10 +174,16 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const ScanScreen(),
-    CollectionScreen(),
-  ];
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      ScanScreen(adventurePath: widget.adventurePath),
+      CollectionScreen(adventurePath: widget.adventurePath),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {

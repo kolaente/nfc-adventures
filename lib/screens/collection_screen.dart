@@ -7,21 +7,28 @@ import '../services/image_path_service.dart';
 
 class CollectionScreen extends StatelessWidget {
   final StorageService _storageService = StorageService();
+  final String adventurePath;
 
-  CollectionScreen({super.key});
+  CollectionScreen({
+    super.key,
+    required this.adventurePath,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>>(
       future: Future.wait([
         _storageService.getCollectedTags(),
-        TagNamesService.loadTagNames(),
+        TagNamesService.loadTagNames(adventurePath),
       ]).then((results) async {
         final collectedTags = results[0] as List<ScannedNfcTag>;
         final allTags = results[1] as Map<String, String>;
 
         // Initialize image paths
-        await ImagePathService.initializeImagePaths(allTags.keys.toSet());
+        await ImagePathService.initializeImagePaths(
+          allTags.keys.toSet(),
+          adventurePath,
+        );
 
         return {
           'collectedTags': collectedTags,
@@ -103,15 +110,7 @@ class CollectionScreen extends StatelessWidget {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(
-                        _getTagImagePath(tagId),
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Center(
-                            child: Icon(Icons.broken_image, size: 32),
-                          );
-                        },
-                      ),
+                      ImagePathService.getImage(tagId),
                       if (!isCollected)
                         Container(
                           color: Colors.black.withOpacity(0.3),
@@ -132,10 +131,5 @@ class CollectionScreen extends StatelessWidget {
         );
       },
     );
-  }
-
-  String _getTagImagePath(String tagId) {
-    return ImagePathService.getImagePath(tagId) ??
-        'assets/tag_images/$tagId.png';
   }
 }

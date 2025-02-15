@@ -4,19 +4,25 @@ import '../models/nfc_tag.dart';
 import '../services/nfc_service.dart';
 
 class ScanScreen extends StatefulWidget {
-  const ScanScreen({super.key});
+  final String adventurePath;
+
+  const ScanScreen({
+    super.key,
+    required this.adventurePath,
+  });
 
   @override
   _ScanScreenState createState() => _ScanScreenState();
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  final NfcService _nfcService = NfcService();
+  late final NfcService _nfcService;
   ScannedNfcTag? _lastScannedTag;
 
   @override
   void initState() {
     super.initState();
+    _nfcService = NfcService(adventurePath: widget.adventurePath);
     _startContinuousScanning();
   }
 
