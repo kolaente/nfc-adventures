@@ -43,11 +43,9 @@ class AdventureService {
   }
 
   Future<void> downloadAndInstallAdventure(String adventureId) async {
-    print("Downloading adventure: $adventureId");
     final response =
         await http.get(Uri.parse('$_baseUrl/adventures/$adventureId.zip'));
     if (response.statusCode != 200) {
-      print("Download failed with status: ${response.statusCode}");
       throw Exception('Failed to download adventure');
     }
 
@@ -56,33 +54,27 @@ class AdventureService {
     final adventure = adventures.firstWhere((a) => a.id == adventureId);
     await setAdventureTitle(adventureId, adventure.title);
 
-    print("Download successful, extracting...");
     final bytes = response.bodyBytes;
     final archive = ZipDecoder().decodeBytes(bytes);
     final appDir = await getApplicationDocumentsDirectory();
     final adventureDir = Directory('${appDir.path}/adventures/$adventureId');
 
-    print("Creating directory: ${adventureDir.path}");
     if (!await adventureDir.exists()) {
       await adventureDir.create(recursive: true);
     }
 
-    print("Extracting files...");
     for (final file in archive) {
       final filename = file.name;
       if (file.isFile) {
         final data = file.content as List<int>;
         final filePath = '${adventureDir.path}/$filename';
-        print("Extracting: $filePath");
         File(filePath)
           ..createSync(recursive: true)
           ..writeAsBytesSync(data);
       }
     }
 
-    print("Setting current adventure...");
     await setCurrentAdventure(adventureId);
-    print("Adventure installation complete");
   }
 
   Future<bool> isAdventureReady(String adventureId) async {

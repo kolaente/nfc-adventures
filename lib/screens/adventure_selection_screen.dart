@@ -43,9 +43,7 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
         ),
       );
 
-      print("Starting adventure download");
       await _adventureService.downloadAndInstallAdventure(adventure.id);
-      print("Adventure download complete");
 
       if (!mounted) return;
 
@@ -55,10 +53,8 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
       // Remove loading indicator
       Navigator.of(context).pop();
       
-      print("Notifying parent of selected adventure");
       widget.onAdventureSelected(adventurePath);
     } catch (e) {
-      print("Error during adventure download: $e");
       if (!mounted) return;
       Navigator.of(context).pop(); // Remove loading indicator
       

@@ -28,7 +28,6 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
   }
 
   Future<void> _checkCurrentAdventure() async {
-    print("Checking current adventure");
     if (!mounted) return;
     
     setState(() {
@@ -37,15 +36,12 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
     
     try {
       final currentAdventureId = await _adventureService.getCurrentAdventure();
-      print("Current adventure ID: $currentAdventureId");
       
       if (currentAdventureId != null) {
         final isReady = await _adventureService.isAdventureReady(currentAdventureId);
-        print("Adventure ready: $isReady");
         
         if (isReady) {
           final path = await _adventureService.getAdventurePath(currentAdventureId);
-          print("Adventure path: $path");
           if (!mounted) return;
           setState(() {
             _currentAdventurePath = path;
@@ -55,14 +51,12 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
         }
       }
       
-      print("No adventure ready");
       if (!mounted) return;
       setState(() {
         _currentAdventurePath = null;
         _isLoading = false;
       });
     } catch (e) {
-      print("Error checking adventure: $e");
       if (!mounted) return;
       setState(() {
         _currentAdventurePath = null;
@@ -74,7 +68,6 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
   Future<void> _showAdventureSelection(BuildContext context) async {
     if (!mounted) return;
     
-    print("Showing adventure selection");
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -86,7 +79,6 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
       ),
     );
 
-    print("Adventure selection result: $result");
     if (result == true) {
       await _checkCurrentAdventure();
     }
@@ -108,7 +100,6 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
 
   @override
   Widget build(BuildContext context) {
-    print("Building main app. isLoading: $_isLoading, path: $_currentAdventurePath");
     return MaterialApp(
       title: 'NFC Tag Collector',
       theme: ThemeData(
@@ -138,7 +129,6 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
           }
 
           if (_currentAdventurePath == null) {
-            print("Current adventure path is null");
             return AdventureSelectionScreen(
               onAdventureSelected: _handleAdventureSelected,
               themeMode: _themeMode,
@@ -196,7 +186,9 @@ class _MainScreenState extends State<MainScreen> {
         });
       }
     } catch (e) {
-      print('Error loading adventure title: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading adventure title: $e')),
+      );
     }
   }
 
