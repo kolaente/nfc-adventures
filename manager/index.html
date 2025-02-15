@@ -81,7 +81,7 @@
             cursor: not-allowed;
         }
 
-        #file-input {
+        #file-input, #zip-input {
             display: none;
         }
 
@@ -117,28 +117,65 @@
             font-size: .75rem;
             color: #464646;
         }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .download-button {
+            background-color: #4CAF50;
+        }
+
+        .reset-button {
+            background-color: #ff4444;
+        }
+
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Adventure Creator</h1>
         
-        <input type="file" id="file-input" multiple accept=".png,.jpg,.jpeg">
-        <button class="button" onclick="document.getElementById('file-input').click()">
-            Add Images
-        </button>
+        <div class="button-container">
+            <input type="file" id="file-input" multiple accept=".png,.jpg,.jpeg">
+            <button class="button" onclick="document.getElementById('file-input').click()">
+                Add Images
+            </button>
+            
+            <input type="file" id="zip-input" accept=".zip">
+            <button class="button" id="zip-import-btn" onclick="document.getElementById('zip-input').click()">
+                Import Zip
+            </button>
+        </div>
         
-        <div class="file-list" id="file-list">
+        <div class="file-list hidden" id="file-list">
             <p id="no-files">No images added yet</p>
         </div>
 
-        <button class="button" id="download-btn" disabled onclick="createZip()">
-            Create & Download Zip
-        </button>
+        <div class="button-container">
+            <button class="button download-button hidden" id="download-btn" disabled onclick="createZip()">
+                Create & Download Zip
+            </button>
+
+            <button class="button reset-button hidden" id="reset-btn" onclick="resetAll()">
+                Reset All
+            </button>
+        </div>
     </div>
 
     <script>
         const fileInput = document.getElementById('file-input');
+        const zipInput = document.getElementById('zip-input');
         const fileList = document.getElementById('file-list');
         const noFilesMessage = document.getElementById('no-files');
         const downloadBtn = document.getElementById('download-btn');
@@ -171,13 +208,64 @@
             fileInput.value = ''; // Reset file input
         });
 
+        zipInput.addEventListener('change', async (e) => {
+            const zipFile = e.target.files[0];
+            if (!zipFile) return;
+
+            try {
+                const zip = await JSZip.loadAsync(zipFile);
+                
+                // Load and parse tags.json
+                const tagsJson = await zip.file("tags.json").async("text");
+                const tags = JSON.parse(tagsJson);
+                
+                // Clear existing files
+                files = [];
+                
+                // Process each file in the images folder
+                const promises = [];
+                zip.folder("images").forEach((relativePath, zipEntry) => {
+                    if (!zipEntry.dir) {
+                        const promise = zipEntry.async("blob").then(blob => {
+                            const file = new File([blob], relativePath, { type: getFileType(relativePath) });
+                            // Extract ID from filename instead of searching through tags
+                            const filename = relativePath.split('/').pop();
+                            const id = filename.split('.')[0]; // Get ID from filename
+                            files.push({
+                                file: file,
+                                id: id,
+                                title: tags[id] || ''
+                            });
+                        });
+                        promises.push(promise);
+                    }
+                });
+                
+                await Promise.all(promises);
+                updateFileList();
+                zipInput.value = ''; // Reset zip input
+                
+            } catch (error) {
+                console.error("Error importing zip:", error);
+                alert("Error importing zip file. Make sure it's a valid Adventure Creator zip.");
+            }
+        });
+
         function updateFileList() {
             if (files.length === 0) {
                 noFilesMessage.style.display = 'block';
                 downloadBtn.disabled = true;
+                downloadBtn.style.display = 'none';  // Hide the download button
+                document.getElementById('zip-import-btn').style.display = 'inline-block';
+                document.getElementById('reset-btn').style.display = 'none';  // Hide the reset button
+                fileList.style.display = 'none';  // Hide the file list container
             } else {
                 noFilesMessage.style.display = 'none';
                 downloadBtn.disabled = false;
+                downloadBtn.style.display = 'block';  // Show the download button
+                document.getElementById('zip-import-btn').style.display = 'none';
+                document.getElementById('reset-btn').style.display = 'inline-block';  // Show the reset button
+                fileList.style.display = 'block';  // Show the file list container
             }
 
             // Clear current list
@@ -201,9 +289,7 @@
 
                 // Create a wrapper div for input fields and errors
                 const inputWrapper = document.createElement('div');
-                inputWrapper.style.display = 'flex';
-                inputWrapper.style.flexDirection = 'column';
-                inputWrapper.style.gap = '5px';
+                inputWrapper.className = 'input-wrapper';
 
                 // ID input and error container
                 const idContainer = document.createElement('div');
@@ -329,7 +415,9 @@
             
             // Add all images to the images folder
             files.forEach(fileData => {
-                imagesFolder.file(fileData.file.name, fileData.file);
+                const extension = fileData.file.name.split('.').pop();
+                const newFilename = `${fileData.id}.${extension}`; // Use ID as filename
+                imagesFolder.file(newFilename, fileData.file);
             });
 
             // Create tags.json
@@ -361,6 +449,23 @@
                 console.error("Error creating zip:", error);
                 alert("Error creating zip file!");
             }
+        }
+
+        function getFileType(filename) {
+            const ext = filename.toLowerCase().split('.').pop();
+            switch (ext) {
+                case 'png': return 'image/png';
+                case 'jpg':
+                case 'jpeg': return 'image/jpeg';
+                default: return '';
+            }
+        }
+
+        function resetAll() {
+            files = [];
+            fileInput.value = '';
+            zipInput.value = '';
+            updateFileList();
         }
     </script>
 </body>
