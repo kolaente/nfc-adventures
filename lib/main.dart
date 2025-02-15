@@ -173,8 +173,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-
   late final List<Widget> _screens;
+  final AdventureService _adventureService = AdventureService();
+  String _adventureTitle = 'NFC Tag Collector';
 
   @override
   void initState() {
@@ -183,6 +184,20 @@ class _MainScreenState extends State<MainScreen> {
       ScanScreen(adventurePath: widget.adventurePath),
       CollectionScreen(adventurePath: widget.adventurePath),
     ];
+    _loadAdventureTitle();
+  }
+
+  Future<void> _loadAdventureTitle() async {
+    try {
+      final title = await _adventureService.getAdventureName(widget.adventurePath);
+      if (mounted) {
+        setState(() {
+          _adventureTitle = title;
+        });
+      }
+    } catch (e) {
+      print('Error loading adventure title: $e');
+    }
   }
 
   @override
@@ -190,7 +205,7 @@ class _MainScreenState extends State<MainScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NFC Tag Collector'),
+        title: Text(_adventureTitle),
         actions: [
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),

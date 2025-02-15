@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AdventureService {
   static const String _baseUrl = 'https://nfc-adventures.pages.dev';
   static const String _currentAdventureKey = 'current_adventure';
+  static const String _adventureTitleKey = 'adventure_title';
 
   Future<String?> getCurrentAdventure() async {
     final prefs = await SharedPreferences.getInstance();
@@ -18,6 +19,16 @@ class AdventureService {
   Future<void> setCurrentAdventure(String adventureId) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_currentAdventureKey, adventureId);
+  }
+
+  Future<String?> getAdventureTitle(String adventureId) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('$_adventureTitleKey:$adventureId');
+  }
+
+  Future<void> setAdventureTitle(String adventureId, String title) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('$_adventureTitleKey:$adventureId', title);
   }
 
   Future<List<Adventure>> fetchAvailableAdventures() async {
@@ -39,6 +50,11 @@ class AdventureService {
       print("Download failed with status: ${response.statusCode}");
       throw Exception('Failed to download adventure');
     }
+
+    // Get the adventure title from the available adventures
+    final adventures = await fetchAvailableAdventures();
+    final adventure = adventures.firstWhere((a) => a.id == adventureId);
+    await setAdventureTitle(adventureId, adventure.title);
 
     print("Download successful, extracting...");
     final bytes = response.bodyBytes;
@@ -79,5 +95,14 @@ class AdventureService {
   Future<String> getAdventurePath(String adventureId) async {
     final appDir = await getApplicationDocumentsDirectory();
     return '${appDir.path}/adventures/$adventureId';
+  }
+
+  Future<String> getAdventureName(String adventurePath) async {
+    final adventureId = adventurePath.split('/').last;
+    final title = await getAdventureTitle(adventureId);
+    if (title != null) {
+      return title;
+    }
+    return 'Unknown Adventure';
   }
 } 
