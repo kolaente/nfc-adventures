@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Creator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .file-list {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            min-height: 100px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            gap: 10px;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-details {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .remove-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background-color: #cc0000;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+        }
+
+        .button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.75rem;
+            margin-top: 5px;
+        }
+
+        .preview-image {
+            max-width: 150px;
+            max-height: 150px;
+            object-fit: contain;
+            width: 150px;
+        }
+
+        .file-details img {
+            flex: 0 0 150px;
+            margin-right: 10px;
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .id-field, .title-field {
+            width: 200px;
+        }
+
+        #no-files {
+            font-size: .75rem;
+            color: #464646;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Adventure Creator</h1>
+        
+        <input type="file" id="file-input" multiple accept=".png,.jpg,.jpeg">
+        <button class="button" onclick="document.getElementById('file-input').click()">
+            Add Images
+        </button>
+        
+        <div class="file-list" id="file-list">
+            <p id="no-files">No images added yet</p>
+        </div>
+
+        <button class="button" id="download-btn" disabled onclick="createZip()">
+            Create & Download Zip
+        </button>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const noFilesMessage = document.getElementById('no-files');
+        const downloadBtn = document.getElementById('download-btn');
+        
+        let files = [];
+
+        fileInput.addEventListener('change', (e) => {
+            const newFiles = Array.from(e.target.files);
+            
+            // Filter for only png and jpg files
+            const validFiles = newFiles.filter(file => {
+                const type = file.type.toLowerCase();
+                return type === 'image/png' || type === 'image/jpeg';
+            });
+
+            if (validFiles.length !== newFiles.length) {
+                alert('Some files were skipped. Only PNG and JPG files are allowed.');
+            }
+
+            // Add empty metadata to each file
+            validFiles.forEach(file => {
+                files.push({
+                    file: file,
+                    id: '',
+                    title: ''
+                });
+            });
+
+            updateFileList();
+            fileInput.value = ''; // Reset file input
+        });
+
+        function updateFileList() {
+            if (files.length === 0) {
+                noFilesMessage.style.display = 'block';
+                downloadBtn.disabled = true;
+            } else {
+                noFilesMessage.style.display = 'none';
+                downloadBtn.disabled = false;
+            }
+
+            // Clear current list
+            while (fileList.firstChild) {
+                fileList.removeChild(fileList.firstChild);
+            }
+
+            // Add file items
+            files.forEach((fileData, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                // Create preview image
+                const preview = document.createElement('img');
+                preview.className = 'preview-image';
+                preview.src = URL.createObjectURL(fileData.file);
+
+                // Create file details container
+                const fileDetails = document.createElement('div');
+                fileDetails.className = 'file-details';
+
+                // Create a wrapper div for input fields and errors
+                const inputWrapper = document.createElement('div');
+                inputWrapper.style.display = 'flex';
+                inputWrapper.style.flexDirection = 'column';
+                inputWrapper.style.gap = '5px';
+
+                // ID input and error container
+                const idContainer = document.createElement('div');
+                idContainer.id = 'idContainer';
+                const idInput = document.createElement('input');
+                const idError = document.createElement('div');
+                idError.className = 'error';
+                idError.style.display = 'none';
+                
+                idInput.type = 'text';
+                idInput.className = 'id-field';
+                idInput.value = fileData.id;
+                idInput.placeholder = 'Enter UID';
+                idInput.required = true;
+                idInput.addEventListener('input', (e) => {
+                    // Strip spaces automatically
+                    let newId = e.target.value.replace(/\s+/g, '');
+                    e.target.value = newId;
+                    
+                    // Reset error message
+                    idError.style.display = 'none';
+                    
+                    // Check if empty
+                    if (!newId.trim()) {
+                        idError.textContent = 'ID is required';
+                        idError.style.display = 'block';
+                        return;
+                    }
+                    
+                    // Validate ID format (only letters, numbers, and colons)
+                    if (!/^[a-zA-Z0-9:]*$/.test(newId)) {
+                        idError.textContent = 'ID can only contain letters, numbers, and colons (:)';
+                        idError.style.display = 'block';
+                        e.target.value = fileData.id;
+                        return;
+                    }
+                    
+                    // Check for uniqueness
+                    if (newId && files.some(f => f.id === newId && f !== fileData)) {
+                        idError.textContent = 'This ID is already in use!';
+                        idError.style.display = 'block';
+                        e.target.value = fileData.id;
+                        return;
+                    }
+                    
+                    fileData.id = newId;
+                });
+
+                // Title input and error container
+                const titleContainer = document.createElement('div');
+                titleContainer.id = 'titleContainer';
+                const titleInput = document.createElement('input');
+                const titleError = document.createElement('div');
+                titleError.className = 'error';
+                titleError.style.display = 'none';
+
+                titleInput.type = 'text';
+                titleInput.className = 'title-field';
+                titleInput.value = fileData.title;
+                titleInput.placeholder = 'Enter title';
+                titleInput.addEventListener('input', (e) => {
+                    titleError.style.display = 'none';
+                    fileData.title = e.target.value;
+                });
+
+                // Organize the elements
+                idContainer.appendChild(idInput);
+                idContainer.appendChild(idError);
+                titleContainer.appendChild(titleInput);
+                titleContainer.appendChild(titleError);
+                inputWrapper.appendChild(idContainer);
+                inputWrapper.appendChild(titleContainer);
+
+                fileDetails.appendChild(preview);
+                fileDetails.appendChild(inputWrapper);
+                fileItem.appendChild(fileDetails);
+
+                // Remove button
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-btn';
+                removeBtn.textContent = 'Remove';
+                removeBtn.onclick = () => removeFile(index);
+
+                fileItem.appendChild(removeBtn);
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            files.splice(index, 1);
+            updateFileList();
+        }
+
+        async function createZip() {
+            // Validate that all images have IDs and titles
+            let hasErrors = false;
+            files.forEach((fileData, index) => {
+                const fileItem = fileList.children[index];
+                const idError = fileItem.querySelector('#idContainer .error');
+                const titleError = fileItem.querySelector('#titleContainer .error');
+                
+                if (!fileData.id.trim()) {
+                    idError.textContent = 'ID is required';
+                    idError.style.display = 'block';
+                    hasErrors = true;
+                }
+                
+                if (!fileData.title.trim()) {
+                    titleError.textContent = 'Title is required';
+                    titleError.style.display = 'block';
+                    hasErrors = true;
+                }
+            });
+
+            if (hasErrors) {
+                return;
+            }
+
+            const zip = new JSZip();
+            
+            // Create images folder
+            const imagesFolder = zip.folder("images");
+            
+            // Add all images to the images folder
+            files.forEach(fileData => {
+                imagesFolder.file(fileData.file.name, fileData.file);
+            });
+
+            // Create tags.json
+            const tags = {};
+            files.forEach(fileData => {
+                tags[fileData.id] = fileData.title;
+            });
+            
+            zip.file("tags.json", JSON.stringify(tags, null, 2));
+
+            try {
+                // Generate the zip file
+                const content = await zip.generateAsync({type: "blob"});
+                
+                // Create download link
+                const downloadUrl = URL.createObjectURL(content);
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = "images_with_tags.zip";
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Clean up
+                URL.revokeObjectURL(downloadUrl);
+            } catch (error) {
+                console.error("Error creating zip:", error);
+                alert("Error creating zip file!");
+            }
+        }
+    </script>
+</body>
+</html>
