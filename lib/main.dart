@@ -256,8 +256,31 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: GestureDetector(
           onTap: _handleTitleTap,
-          child:
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
               Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
+              if (_debugMode) ...[
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.orange,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Text(
+                    'Debug',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
         ),
         actions: [
           IconButton(
