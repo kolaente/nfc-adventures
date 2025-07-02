@@ -9,10 +9,12 @@ import '../services/image_path_service.dart';
 class CollectionScreen extends StatelessWidget {
   final StorageService _storageService = StorageService();
   final String adventurePath;
+  final bool debugMode;
 
   CollectionScreen({
     super.key,
     required this.adventurePath,
+    this.debugMode = false,
   });
 
   @override
@@ -53,9 +55,9 @@ class CollectionScreen extends StatelessWidget {
 
         return GridView.builder(
           padding: const EdgeInsets.all(8),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1.0,
+            childAspectRatio: debugMode ? 0.8 : 1.0,
             crossAxisSpacing: 8,
             mainAxisSpacing: 8,
           ),
@@ -81,51 +83,73 @@ class CollectionScreen extends StatelessWidget {
                         );
                       }
                     : null,
-                child: ColorFiltered(
-                  colorFilter: isCollected
-                      ? const ColorFilter.mode(
-                          Colors.transparent,
-                          BlendMode.saturation,
-                        )
-                      : const ColorFilter.matrix([
-                          0.2126,
-                          0.7152,
-                          0.0722,
-                          0,
-                          0,
-                          0.2126,
-                          0.7152,
-                          0.0722,
-                          0,
-                          0,
-                          0.2126,
-                          0.7152,
-                          0.0722,
-                          0,
-                          0,
-                          0,
-                          0,
-                          0,
-                          1,
-                          0,
-                        ]),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      ImagePathService.getImage(tagId),
-                      if (!isCollected)
-                        Container(
-                          color: Colors.black.withOpacity(0.3),
-                          child: const Center(
-                            child: Icon(
-                              Icons.lock,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ColorFiltered(
+                        colorFilter: isCollected
+                            ? const ColorFilter.mode(
+                                Colors.transparent,
+                                BlendMode.saturation,
+                              )
+                            : const ColorFilter.matrix([
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ]),
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            ImagePathService.getImage(tagId),
+                            if (!isCollected)
+                              Container(
+                                color: Colors.black.withOpacity(0.3),
+                                child: const Center(
+                                  child: Icon(
+                                    Icons.lock,
+                                    color: Colors.white,
+                                    size: 32,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                    ],
-                  ),
+                      ),
+                    ),
+                    if (debugMode)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(4),
+                        child: Text(
+                          tagId,
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.grey,
+                                    fontFamily: 'monospace',
+                                    fontSize: 10,
+                                  ),
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             );

@@ -178,10 +178,9 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
-  late final List<Widget> _screens;
   final AdventureService _adventureService = AdventureService();
   String? _adventureTitle;
-  
+
   // Debug mode state
   bool _debugMode = false;
   int _tapCount = 0;
@@ -190,12 +189,19 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _screens = [
-      ScanScreen(adventurePath: widget.adventurePath),
-      CollectionScreen(adventurePath: widget.adventurePath),
-    ];
     _loadAdventureTitle();
   }
+
+  List<Widget> get _screens => [
+        ScanScreen(
+          adventurePath: widget.adventurePath,
+          debugMode: _debugMode,
+        ),
+        CollectionScreen(
+          adventurePath: widget.adventurePath,
+          debugMode: _debugMode,
+        ),
+      ];
 
   Future<void> _loadAdventureTitle() async {
     try {
@@ -217,13 +223,14 @@ class _MainScreenState extends State<MainScreen> {
 
   void _handleTitleTap() {
     final now = DateTime.now();
-    
-    if (_lastTapTime == null || now.difference(_lastTapTime!) > const Duration(seconds: 2)) {
+
+    if (_lastTapTime == null ||
+        now.difference(_lastTapTime!) > const Duration(seconds: 2)) {
       _tapCount = 1;
     } else {
       _tapCount++;
     }
-    
+
     _lastTapTime = now;
 
     if (_tapCount >= 10) {
@@ -231,10 +238,11 @@ class _MainScreenState extends State<MainScreen> {
         _debugMode = !_debugMode;
         _tapCount = 0;
       });
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(_debugMode ? 'Debug mode enabled' : 'Debug mode disabled'),
+          content:
+              Text(_debugMode ? 'Debug mode enabled' : 'Debug mode disabled'),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -248,7 +256,8 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: GestureDetector(
           onTap: _handleTitleTap,
-          child: Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
+          child:
+              Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
         ),
         actions: [
           IconButton(

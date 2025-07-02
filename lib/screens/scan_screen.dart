@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/nfc_tag.dart';
@@ -6,10 +7,12 @@ import '../services/nfc_service.dart';
 
 class ScanScreen extends StatefulWidget {
   final String adventurePath;
+  final bool debugMode;
 
   const ScanScreen({
     super.key,
     required this.adventurePath,
+    this.debugMode = false,
   });
 
   @override
@@ -68,6 +71,37 @@ class _ScanScreenState extends State<ScanScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(AppLocalizations.of(context)!.scanInstructions),
+          if (widget.debugMode && _lastScannedTag != null) ...[
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () async {
+                await Clipboard.setData(
+                    ClipboardData(text: _lastScannedTag!.uid));
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Tag ID copied to clipboard'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'Last scanned tag ID: ${_lastScannedTag!.uid}',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.grey,
+                        fontFamily: 'monospace',
+                      ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
