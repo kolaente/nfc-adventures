@@ -181,6 +181,11 @@ class _MainScreenState extends State<MainScreen> {
   late final List<Widget> _screens;
   final AdventureService _adventureService = AdventureService();
   String? _adventureTitle;
+  
+  // Debug mode state
+  bool _debugMode = false;
+  int _tapCount = 0;
+  DateTime? _lastTapTime;
 
   @override
   void initState() {
@@ -210,12 +215,41 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  void _handleTitleTap() {
+    final now = DateTime.now();
+    
+    if (_lastTapTime == null || now.difference(_lastTapTime!) > const Duration(seconds: 2)) {
+      _tapCount = 1;
+    } else {
+      _tapCount++;
+    }
+    
+    _lastTapTime = now;
+
+    if (_tapCount >= 10) {
+      setState(() {
+        _debugMode = !_debugMode;
+        _tapCount = 0;
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(_debugMode ? 'Debug mode enabled' : 'Debug mode disabled'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
+        title: GestureDetector(
+          onTap: _handleTitleTap,
+          child: Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
+        ),
         actions: [
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
