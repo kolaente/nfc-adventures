@@ -1,4 +1,4 @@
-package com.example.nfc_collector_app
+package de.kolaente.nfc_adventures
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterFragmentActivity

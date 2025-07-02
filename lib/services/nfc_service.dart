@@ -1,4 +1,4 @@
-import 'package:nfc_collector_app/services/tag_names_service.dart';
+import 'package:nfc_adventures/services/tag_names_service.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:nfc_manager/platform_tags.dart';
 

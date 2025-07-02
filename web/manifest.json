@@ -1,6 +1,6 @@
 {
-    "name": "nfc_collector_app",
-    "short_name": "nfc_collector_app",
+    "name": "nfc_adventures",
+    "short_name": "nfc_adventures",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

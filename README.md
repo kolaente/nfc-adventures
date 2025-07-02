@@ -1,4 +1,4 @@
-# nfc_collector_app
+# nfc_adventures
 
 A new Flutter project.
 
