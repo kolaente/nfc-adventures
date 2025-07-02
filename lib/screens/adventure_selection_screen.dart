@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../models/adventure.dart';
 import '../services/adventure_service.dart';
 
@@ -13,7 +14,8 @@ class AdventureSelectionScreen extends StatefulWidget {
   });
 
   @override
-  State<AdventureSelectionScreen> createState() => _AdventureSelectionScreenState();
+  State<AdventureSelectionScreen> createState() =>
+      _AdventureSelectionScreenState();
 }
 
 class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
@@ -48,18 +50,21 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
       if (!mounted) return;
 
       // Get the adventure path
-      final adventurePath = await _adventureService.getAdventurePath(adventure.id);
-      
+      final adventurePath =
+          await _adventureService.getAdventurePath(adventure.id);
+
       // Remove loading indicator
       Navigator.of(context).pop();
-      
+
       widget.onAdventureSelected(adventurePath);
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop(); // Remove loading indicator
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e')),
+        SnackBar(
+            content:
+                Text(AppLocalizations.of(context)!.errorGeneric(e.toString()))),
       );
     }
   }
@@ -71,9 +76,10 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
       onWillPop: () async => ModalRoute.of(context)?.settings.name != '/',
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Select Adventure'),
+          title: Text(AppLocalizations.of(context)!.adventureSelectionTitle),
           // Only show back button if this isn't the initial screen
-          automaticallyImplyLeading: ModalRoute.of(context)?.settings.name != '/',
+          automaticallyImplyLeading:
+              ModalRoute.of(context)?.settings.name != '/',
         ),
         body: FutureBuilder<List<Adventure>>(
           future: _adventuresFuture,
@@ -87,11 +93,12 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error: ${snapshot.error}'),
+                    Text(AppLocalizations.of(context)!
+                        .errorGeneric(snapshot.error.toString())),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _retryLoading,
-                      child: const Text('Retry'),
+                      child: Text(AppLocalizations.of(context)!.retryButton),
                     ),
                   ],
                 ),
@@ -114,4 +121,4 @@ class _AdventureSelectionScreenState extends State<AdventureSelectionScreen> {
       ),
     );
   }
-} 
+}

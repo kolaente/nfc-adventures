@@ -97,4 +97,4 @@ class AdventureService {
     }
     return 'Unknown Adventure';
   }
-} 
+}

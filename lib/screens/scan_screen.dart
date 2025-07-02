@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/nfc_tag.dart';
 import '../services/nfc_service.dart';
@@ -43,12 +44,15 @@ class _ScanScreenState extends State<ScanScreen> {
               });
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Tag scanned: ${tag.name}'),
+                  content: Text(AppLocalizations.of(context)!
+                      .tagScannedSuccess(tag.name)),
                   duration: const Duration(seconds: 2),
                 ),
               );
             }
           },
+          nfcPrompt: AppLocalizations.of(context)!.nfcPrompt,
+          unknownTagName: AppLocalizations.of(context)!.unknownTag,
         );
         await Future.delayed(const Duration(milliseconds: 500));
       } catch (e) {
@@ -59,11 +63,11 @@ class _ScanScreenState extends State<ScanScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Hold your tag near the reader...'),
+          Text(AppLocalizations.of(context)!.scanInstructions),
         ],
       ),
     );

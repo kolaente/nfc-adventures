@@ -1,0 +1,96 @@
+{
+  "@@locale": "en",
+  
+  "appTitle": "NFC Adventures",
+  "@appTitle": {
+    "description": "The application title"
+  },
+  
+  "bottomNavScan": "Scan",
+  "@bottomNavScan": {
+    "description": "Bottom navigation label for scan screen"
+  },
+  
+  "bottomNavCollection": "Collection",
+  "@bottomNavCollection": {
+    "description": "Bottom navigation label for collection screen"
+  },
+  
+  "adventureSelectionTitle": "Select Adventure",
+  "@adventureSelectionTitle": {
+    "description": "Title for adventure selection screen"
+  },
+  
+  "scanInstructions": "Hold your tag near the reader...",
+  "@scanInstructions": {
+    "description": "Instructions shown on scan screen"
+  },
+  
+  "tagScannedSuccess": "Tag scanned: {tagName}",
+  "@tagScannedSuccess": {
+    "description": "Success message when tag is scanned",
+    "placeholders": {
+      "tagName": {
+        "type": "String",
+        "example": "Forest Guardian"
+      }
+    }
+  },
+  
+  "nfcPrompt": "Hold your device near the NFC tag",
+  "@nfcPrompt": {
+    "description": "NFC scanning prompt message"
+  },
+  
+  "errorGeneric": "Error: {error}",
+  "@errorGeneric": {
+    "description": "Generic error message",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "Network connection failed"
+      }
+    }
+  },
+  
+  "errorLoadingTags": "Error loading tags",
+  "@errorLoadingTags": {
+    "description": "Error message when tags fail to load"
+  },
+  
+  "errorLoadingAdventures": "Failed to load adventures",
+  "@errorLoadingAdventures": {
+    "description": "Error when adventures cannot be loaded"
+  },
+  
+  "errorDownloadingAdventure": "Failed to download adventure",
+  "@errorDownloadingAdventure": {
+    "description": "Error when adventure download fails"
+  },
+  
+  "errorLoadingAdventureTitle": "Error loading adventure title: {error}",
+  "@errorLoadingAdventureTitle": {
+    "description": "Error loading adventure title",
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "File not found"
+      }
+    }
+  },
+  
+  "retryButton": "Retry",
+  "@retryButton": {
+    "description": "Button text for retry action"
+  },
+  
+  "unknownAdventure": "Unknown Adventure",
+  "@unknownAdventure": {
+    "description": "Fallback text for unknown adventure"
+  },
+  
+  "unknownTag": "Unknown Tag",
+  "@unknownTag": {
+    "description": "Fallback text for unknown tag"
+  }
+}

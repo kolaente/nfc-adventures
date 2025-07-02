@@ -13,4 +13,4 @@ class Adventure {
       title: title,
     );
   }
-} 
+}

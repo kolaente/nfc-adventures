@@ -11,7 +11,11 @@ class NfcService {
 
   NfcService({required this.adventurePath});
 
-  Future<void> readNfcTag({required Function(ScannedNfcTag) onTagScanned}) async {
+  Future<void> readNfcTag({
+    required Function(ScannedNfcTag) onTagScanned,
+    String? nfcPrompt,
+    String? unknownTagName,
+  }) async {
     bool isAvailable = await NfcManager.instance.isAvailable();
     if (!isAvailable) return;
 
@@ -20,7 +24,7 @@ class NfcService {
           NfcPollingOption.iso14443,
           NfcPollingOption.iso15693,
         },
-        alertMessage: 'Hold your device near the NFC tag',
+        alertMessage: nfcPrompt ?? 'Hold your device near the NFC tag',
         onDiscovered: (NfcTag nfcTag) async {
           String? tagId;
           var tech = NfcA.from(nfcTag);
@@ -36,7 +40,7 @@ class NfcService {
           }
 
           final tagNames = await TagNamesService.loadTagNames(adventurePath);
-          final name = tagNames[tagId] ?? 'Unknown Tag';
+          final name = tagNames[tagId] ?? unknownTagName ?? 'Unknown Tag';
 
           final tag = ScannedNfcTag(
             uid: tagId,

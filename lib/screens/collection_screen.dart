@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../services/storage_service.dart';
 import '../services/tag_names_service.dart';
 import '../models/nfc_tag.dart';
@@ -41,7 +42,8 @@ class CollectionScreen extends StatelessWidget {
         }
 
         if (!snapshot.hasData) {
-          return const Center(child: Text('Error loading tags'));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.errorLoadingTags));
         }
 
         final collectedTags =

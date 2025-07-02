@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screens/scan_screen.dart';
 import 'screens/collection_screen.dart';
 import 'screens/adventure_selection_screen.dart';
@@ -29,19 +31,21 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
 
   Future<void> _checkCurrentAdventure() async {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final currentAdventureId = await _adventureService.getCurrentAdventure();
-      
+
       if (currentAdventureId != null) {
-        final isReady = await _adventureService.isAdventureReady(currentAdventureId);
-        
+        final isReady =
+            await _adventureService.isAdventureReady(currentAdventureId);
+
         if (isReady) {
-          final path = await _adventureService.getAdventurePath(currentAdventureId);
+          final path =
+              await _adventureService.getAdventurePath(currentAdventureId);
           if (!mounted) return;
           setState(() {
             _currentAdventurePath = path;
@@ -50,7 +54,7 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
           return;
         }
       }
-      
+
       if (!mounted) return;
       setState(() {
         _currentAdventurePath = null;
@@ -67,7 +71,7 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
 
   Future<void> _showAdventureSelection(BuildContext context) async {
     if (!mounted) return;
-    
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -75,7 +79,8 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
           onAdventureSelected: _handleAdventureSelected,
           themeMode: _themeMode,
         ),
-        settings: RouteSettings(name: _currentAdventurePath == null ? '/' : '/select'),
+        settings: RouteSettings(
+            name: _currentAdventurePath == null ? '/' : '/select'),
       ),
     );
 
@@ -102,6 +107,16 @@ class _NfcCollectorAppState extends State<NfcCollectorApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'NFC Tag Collector',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('de'), // German
+      ],
       theme: ThemeData(
         primarySwatch: Colors.blue,
         brightness: Brightness.light,
@@ -165,7 +180,7 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   late final List<Widget> _screens;
   final AdventureService _adventureService = AdventureService();
-  String _adventureTitle = 'NFC Tag Collector';
+  String? _adventureTitle;
 
   @override
   void initState() {
@@ -179,7 +194,8 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _loadAdventureTitle() async {
     try {
-      final title = await _adventureService.getAdventureName(widget.adventurePath);
+      final title =
+          await _adventureService.getAdventureName(widget.adventurePath);
       if (mounted) {
         setState(() {
           _adventureTitle = title;
@@ -187,7 +203,9 @@ class _MainScreenState extends State<MainScreen> {
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error loading adventure title: $e')),
+        SnackBar(
+            content: Text(AppLocalizations.of(context)!
+                .errorLoadingAdventureTitle(e.toString()))),
       );
     }
   }
@@ -197,7 +215,7 @@ class _MainScreenState extends State<MainScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_adventureTitle),
+        title: Text(_adventureTitle ?? AppLocalizations.of(context)!.appTitle),
         actions: [
           IconButton(
             icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
@@ -209,14 +227,14 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: (index) => setState(() => _selectedIndex = index),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.nfc),
-            label: 'Scan',
+            icon: const Icon(Icons.nfc),
+            label: AppLocalizations.of(context)!.bottomNavScan,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.collections),
-            label: 'Collection',
+            icon: const Icon(Icons.collections),
+            label: AppLocalizations.of(context)!.bottomNavCollection,
           ),
         ],
       ),
