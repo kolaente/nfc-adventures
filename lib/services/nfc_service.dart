@@ -31,7 +31,8 @@ class NfcService {
           if (tech is NfcA) {
             tagId = tech.identifier
                 .map((e) => e.toRadixString(16).padLeft(2, '0'))
-                .join(':');
+                .join(':')
+                .toLowerCase();
           }
           await NfcManager.instance.stopSession();
 
