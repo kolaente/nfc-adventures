@@ -74,6 +74,22 @@ class AdventureService {
       }
     }
 
+    // Lowercase all image filenames after extraction
+    final imagesDir = Directory('${adventureDir.path}/images');
+    if (await imagesDir.exists()) {
+      await for (final entity in imagesDir.list()) {
+        if (entity is File) {
+          final fileName = entity.path.split('/').last;
+          final lowerCaseFileName = fileName.toLowerCase();
+          
+          if (fileName != lowerCaseFileName) {
+            final newPath = '${imagesDir.path}/$lowerCaseFileName';
+            await entity.rename(newPath);
+          }
+        }
+      }
+    }
+
     await setCurrentAdventure(adventureId);
   }
 
