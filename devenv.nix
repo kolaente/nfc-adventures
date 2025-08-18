@@ -17,7 +17,7 @@
     enable = true;
     flutter.enable = true;
 
-    platforms.version = [ "31" "33" "34" ];
+    platforms.version = [ "34" "35" ];
     cmake.version = [ "3.18.1" "3.22.1" ];
     googleTVAddOns.enable = false;
     ndk = {
