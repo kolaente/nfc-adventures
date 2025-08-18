@@ -38,6 +38,7 @@ dependencies:
   http: ^1.1.0
   path_provider: ^2.1.1
   archive: ^3.4.9
+  mobile_scanner: ^5.0.0
 
 dev_dependencies:
   flutter_test:

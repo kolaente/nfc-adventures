@@ -25,6 +25,11 @@
   "@scanInstructions": {
     "description": "Instructions shown on scan screen"
   },
+
+  "qrScanInstructions": "Point camera at QR code to scan adventure",
+  "@qrScanInstructions": {
+    "description": "Instructions shown on QR scanner screen"
+  },
   
   "tagScannedSuccess": "Tag scanned: {tagName}",
   "@tagScannedSuccess": {
@@ -51,6 +56,11 @@
         "example": "Network connection failed"
       }
     }
+  },
+
+  "errorInvalidQrCode": "Invalid QR code",
+  "@errorInvalidQrCode": {
+    "description": "Error message for invalid QR codes"
   },
   
   "errorLoadingTags": "Error loading tags",
