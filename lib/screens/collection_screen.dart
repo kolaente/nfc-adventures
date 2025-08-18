@@ -53,16 +53,35 @@ class CollectionScreen extends StatelessWidget {
         final allTags = snapshot.data!['allTags'] as Map<String, String>;
         final collectedTagIds = collectedTags.map((t) => t.uid).toSet();
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(8),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: debugMode ? 0.8 : 1.0,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-          ),
-          itemCount: allTags.length,
-          itemBuilder: (context, index) {
+        return Column(
+          children: [
+            // Collection counter header
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Text(
+                AppLocalizations.of(context)!.tagCollectionCounter(
+                  collectedTags.length,
+                  allTags.length,
+                ),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            // Grid view
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(8),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: debugMode ? 0.8 : 1.0,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemCount: allTags.length,
+                itemBuilder: (context, index) {
             final tagId = allTags.keys.elementAt(index);
             final tagName = allTags[tagId]!;
             final isCollected = collectedTagIds.contains(tagId);
@@ -154,6 +173,9 @@ class CollectionScreen extends StatelessWidget {
               ),
             );
           },
+        ),
+            ),
+          ],
         );
       },
     );
