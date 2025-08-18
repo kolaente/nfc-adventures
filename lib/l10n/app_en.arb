@@ -107,5 +107,10 @@
         "example": "119"
       }
     }
+  },
+
+  "allTagsFound": "All tags found!",
+  "@allTagsFound": {
+    "description": "Message shown when all tags are collected"
   }
 }

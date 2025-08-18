@@ -16,5 +16,6 @@
   "retryButton": "Nochmal versuchen",
   "unknownAdventure": "Unbekanntes Abenteuer",
   "unknownTag": "Unbekannter Tag",
-  "tagCollectionCounter": "{collected} von {total} tags gefunden"
+  "tagCollectionCounter": "{collected} von {total} Tags gefunden",
+  "allTagsFound": "Alle Tags gefunden!"
 }
