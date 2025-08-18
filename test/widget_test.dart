@@ -15,7 +15,7 @@ void main() {
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const NfcCollectorApp());
-    
+
     // Use pump with a shorter duration instead of pumpAndSettle to avoid timeout
     await tester.pump();
 
