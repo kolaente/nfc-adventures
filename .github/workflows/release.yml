@@ -33,7 +33,7 @@ jobs:
         uses: flutter-actions/setup-flutter@v4
         with:
           channel: stable
-          version: latest
+          version: 3.24.3
           cache: true
       - run: flutter --version
       - run: flutter pub get
