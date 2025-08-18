@@ -81,7 +81,7 @@ class AdventureService {
         if (entity is File) {
           final fileName = entity.path.split('/').last;
           final lowerCaseFileName = fileName.toLowerCase();
-          
+
           if (fileName != lowerCaseFileName) {
             final newPath = '${imagesDir.path}/$lowerCaseFileName';
             await entity.rename(newPath);

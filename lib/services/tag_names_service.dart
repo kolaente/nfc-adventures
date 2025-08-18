@@ -7,8 +7,7 @@ class TagNamesService {
     final file = File('$adventurePath/tags.json');
     final jsonString = await file.readAsString();
     final Map<String, dynamic> jsonMap = json.decode(jsonString);
-    return Map<String, String>.from(
-      jsonMap.map((key, value) => MapEntry(key.toString().toLowerCase(), value.toString()))
-    );
+    return Map<String, String>.from(jsonMap.map((key, value) =>
+        MapEntry(key.toString().toLowerCase(), value.toString())));
   }
 }
