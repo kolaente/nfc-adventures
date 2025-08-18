@@ -15,5 +15,7 @@
   "errorLoadingAdventureTitle": "Fehler beim Laden des Abenteuer-Titels: {error}",
   "retryButton": "Nochmal versuchen",
   "unknownAdventure": "Unbekanntes Abenteuer",
-  "unknownTag": "Unbekannter Tag"
+  "unknownTag": "Unbekannter Tag",
+  "tagCollectionCounter": "{collected} von {total} Tags gefunden",
+  "allTagsFound": "Alle Tags gefunden!"
 }

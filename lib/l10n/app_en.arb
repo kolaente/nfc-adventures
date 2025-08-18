@@ -92,5 +92,25 @@
   "unknownTag": "Unknown Tag",
   "@unknownTag": {
     "description": "Fallback text for unknown tag"
+  },
+
+  "tagCollectionCounter": "{collected} of {total} tags found",
+  "@tagCollectionCounter": {
+    "description": "Counter showing collected vs total tags",
+    "placeholders": {
+      "collected": {
+        "type": "int",
+        "example": "48"
+      },
+      "total": {
+        "type": "int", 
+        "example": "119"
+      }
+    }
+  },
+
+  "allTagsFound": "All tags found!",
+  "@allTagsFound": {
+    "description": "Message shown when all tags are collected"
   }
 }
