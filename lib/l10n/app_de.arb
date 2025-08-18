@@ -19,5 +19,6 @@
   "unknownAdventure": "Unbekanntes Abenteuer",
   "unknownTag": "Unbekannter Tag",
   "tagCollectionCounter": "{collected} von {total} Tags gefunden",
-  "allTagsFound": "Alle Tags gefunden!"
+  "allTagsFound": "Alle Tags gefunden!",
+  "tapToClose": "Zum Schließen tippen"
 }

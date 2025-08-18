@@ -215,7 +215,7 @@ class _TagImagePreviewDialogState extends State<TagImagePreviewDialog> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 16),
                 child: Text(
-                  'Tap to close',
+                  AppLocalizations.of(context)!.tapToClose,
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,

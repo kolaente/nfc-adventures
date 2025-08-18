@@ -122,5 +122,10 @@
   "allTagsFound": "All tags found!",
   "@allTagsFound": {
     "description": "Message shown when all tags are collected"
+  },
+  
+  "tapToClose": "Tap to close",
+  "@tapToClose": {
+    "description": "Hint text for dismissing dialog by tapping"
   }
 }
