@@ -4,6 +4,44 @@ NFC Adventures is a cross-platform Flutter mobile application that enables inter
 
 Always reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.
 
+## Development Guidelines
+
+### Adding New Strings and Translations
+
+When adding new user-facing strings to the application:
+
+1. **Add to English localization**: Update `lib/l10n/app_en.arb` with new string keys
+2. **Add German translation**: Update `lib/l10n/app_de.arb` with corresponding German translations
+3. **Use proper ARB format**: Follow the existing pattern for string keys and descriptions
+4. **Regenerate localizations**: Run `flutter gen-l10n` if needed to update generated files
+
+### Commit Message Guidelines
+
+Use **conventional commits** format for all commit messages:
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, no logic changes)
+- `refactor`: Code refactoring without feature/bug changes
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks, dependencies updates
+
+**Examples**:
+- `feat(nfc): add debug mode for NFC scanning`
+- `fix(ui): correct theme switching animation`
+- `docs: update installation instructions`
+- `feat(l10n): add German translations for settings screen`
+
 ## Working Effectively
 
 ### Bootstrap, Build, and Test the Repository
@@ -28,14 +66,14 @@ Follow these exact commands in sequence:
    # If all methods fail, document the specific error for environment setup
    ```
 
-2. **Install Dependencies** - NEVER CANCEL: Takes 2-5 minutes. Set timeout to 10+ minutes:
+2. **Install Dependencies** (only when adding new dependencies) - NEVER CANCEL: Takes 2-5 minutes. Set timeout to 10+ minutes:
    ```bash
    cd /home/runner/work/nfc-adventures/nfc-adventures
    flutter pub get
    # May fail in network-restricted environments - document specific errors
    ```
 
-3. **Generate App Icons (if needed)** - Takes 1-2 minutes:
+3. **Generate App Icons** (only when changing app icons) - Takes 1-2 minutes:
    ```bash
    flutter pub run flutter_launcher_icons
    ```
@@ -76,9 +114,6 @@ Follow these exact commands in sequence:
 ### Run the Application
 
 - **Mobile/Development**: `flutter run` - Requires connected device or emulator
-- **Web Development**: `flutter run -d chrome` - NEVER CANCEL: Takes 5-10 minutes to start. Set timeout to 15+ minutes
-- **Linux Desktop**: `./build/linux/x64/release/bundle/nfc_adventures`
-- **Windows Desktop**: `build\windows\x64\runner\Release\nfc_adventures.exe`
 
 ## Validation
 
@@ -156,16 +191,9 @@ The following are outputs from frequently run commands. Reference them instead o
 - **Scan Screen**: `lib/screens/scan_screen.dart` - NFC scanning interface
 - **Collection Screen**: `lib/screens/collection_screen.dart` - View collected tags
 
-### Flutter pubspec.yaml Dependencies
+### Flutter Dependencies
 
-Main dependencies (reference when troubleshooting):
-- `flutter: sdk` - Flutter framework
-- `nfc_manager: ^3.5.0` - NFC functionality
-- `shared_preferences: ^2.5.1` - Local data storage  
-- `http: ^1.1.0` - Network requests for adventure downloads
-- `path_provider: ^2.1.1` - File system access
-- `archive: ^3.4.9` - ZIP file handling for adventures
-- `intl: ^0.19.0` - Internationalization support
+See [pubspec.yaml](pubspec.yaml) for complete list of dependencies and their versions.
 
 ### Adventure Package Structure
 
