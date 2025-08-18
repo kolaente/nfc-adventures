@@ -84,98 +84,100 @@ class CollectionScreen extends StatelessWidget {
                 ),
                 itemCount: allTags.length,
                 itemBuilder: (context, index) {
-            final tagId = allTags.keys.elementAt(index);
-            final tagName = allTags[tagId]!;
-            final isCollected = collectedTagIds.contains(tagId);
+                  final tagId = allTags.keys.elementAt(index);
+                  final tagName = allTags[tagId]!;
+                  final isCollected = collectedTagIds.contains(tagId);
 
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              child: InkWell(
-                onTap: isCollected
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TagDetailScreen(
-                              tagId: tagId,
-                              tagName: tagName,
-                            ),
-                          ),
-                        );
-                      }
-                    : null,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: ColorFiltered(
-                        colorFilter: isCollected
-                            ? const ColorFilter.mode(
-                                Colors.transparent,
-                                BlendMode.saturation,
-                              )
-                            : const ColorFilter.matrix([
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0.2126,
-                                0.7152,
-                                0.0722,
-                                0,
-                                0,
-                                0,
-                                0,
-                                0,
-                                1,
-                                0,
-                              ]),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            ImagePathService.getImage(tagId),
-                            if (!isCollected)
-                              Container(
-                                color: Colors.black.withOpacity(0.3),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.lock,
-                                    color: Colors.white,
-                                    size: 32,
+                  return Card(
+                    clipBehavior: Clip.antiAlias,
+                    child: InkWell(
+                      onTap: isCollected
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => TagDetailScreen(
+                                    tagId: tagId,
+                                    tagName: tagName,
                                   ),
                                 ),
+                              );
+                            }
+                          : null,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ColorFiltered(
+                              colorFilter: isCollected
+                                  ? const ColorFilter.mode(
+                                      Colors.transparent,
+                                      BlendMode.saturation,
+                                    )
+                                  : const ColorFilter.matrix([
+                                      0.2126,
+                                      0.7152,
+                                      0.0722,
+                                      0,
+                                      0,
+                                      0.2126,
+                                      0.7152,
+                                      0.0722,
+                                      0,
+                                      0,
+                                      0.2126,
+                                      0.7152,
+                                      0.0722,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
+                                      0,
+                                      1,
+                                      0,
+                                    ]),
+                              child: Stack(
+                                fit: StackFit.expand,
+                                children: [
+                                  ImagePathService.getImage(tagId),
+                                  if (!isCollected)
+                                    Container(
+                                      color: Colors.black.withOpacity(0.3),
+                                      child: const Center(
+                                        child: Icon(
+                                          Icons.lock,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                          ],
-                        ),
+                            ),
+                          ),
+                          if (debugMode)
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(4),
+                              child: Text(
+                                tagId,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Colors.grey,
+                                      fontFamily: 'monospace',
+                                      fontSize: 10,
+                                    ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (debugMode)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(4),
-                        child: Text(
-                          tagId,
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey,
-                                    fontFamily: 'monospace',
-                                    fontSize: 10,
-                                  ),
-                          textAlign: TextAlign.center,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
             ),
           ],
         );

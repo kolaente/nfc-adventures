@@ -11,7 +11,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nfc_adventures/main.dart';
 
 void main() {
-  testWidgets('App starts with QR scanner when no adventure is selected', (WidgetTester tester) async {
+  testWidgets('App starts with QR scanner when no adventure is selected',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const NfcCollectorApp());
     await tester.pumpAndSettle();

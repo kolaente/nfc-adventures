@@ -36,7 +36,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
   Future<void> _processQrCode(String adventureId) async {
     if (_isProcessing) return;
-    
+
     setState(() {
       _isProcessing = true;
     });
@@ -45,22 +45,24 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       // Check if adventure is already installed
       final isReady = await _adventureService.isAdventureReady(adventureId);
       if (isReady) {
-        final adventurePath = await _adventureService.getAdventurePath(adventureId);
+        final adventurePath =
+            await _adventureService.getAdventurePath(adventureId);
         widget.onAdventureSelected(adventurePath);
         return;
       }
 
       // Download and install the adventure
       await _adventureService.downloadAndInstallAdventure(adventureId);
-      
+
       if (!mounted) return;
 
       // Get the adventure path and navigate
-      final adventurePath = await _adventureService.getAdventurePath(adventureId);
+      final adventurePath =
+          await _adventureService.getAdventurePath(adventureId);
       widget.onAdventureSelected(adventurePath);
     } catch (e) {
       if (!mounted) return;
-      
+
       // Show error as toast
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -68,7 +70,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
           duration: const Duration(seconds: 3),
         ),
       );
-      
+
       // Reset processing state and resume scanning
       setState(() {
         _isProcessing = false;
@@ -83,11 +85,12 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 
     final barcode = barcodes.first;
     final adventureId = barcode.rawValue;
-    
+
     if (adventureId == null || adventureId.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context)?.errorInvalidQrCode ?? 'Invalid QR code'),
+          content: Text(AppLocalizations.of(context)?.errorInvalidQrCode ??
+              'Invalid QR code'),
           duration: const Duration(seconds: 2),
         ),
       );
@@ -99,26 +102,27 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     await _processQrCode(adventureId);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      // Prevent back button if this is the initial screen  
+      // Prevent back button if this is the initial screen
       onWillPop: () async => ModalRoute.of(context)?.settings.name != '/',
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)?.adventureSelectionTitle ?? 'Scan QR Code'),
-          automaticallyImplyLeading: ModalRoute.of(context)?.settings.name != '/',
+          title: Text(AppLocalizations.of(context)?.adventureSelectionTitle ??
+              'Scan QR Code'),
+          automaticallyImplyLeading:
+              ModalRoute.of(context)?.settings.name != '/',
         ),
         body: Column(
           children: [
             Expanded(
               child: Stack(
                 children: [
-                    MobileScanner(
-                      controller: _controller,
-                      onDetect: _onDetect,
-                    ),
+                  MobileScanner(
+                    controller: _controller,
+                    onDetect: _onDetect,
+                  ),
                   if (_isProcessing)
                     const Center(
                       child: CircularProgressIndicator(),
@@ -136,7 +140,8 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
-                          AppLocalizations.of(context)?.qrScanInstructions ?? 'Point camera at QR code to scan adventure',
+                          AppLocalizations.of(context)?.qrScanInstructions ??
+                              'Point camera at QR code to scan adventure',
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 16,
