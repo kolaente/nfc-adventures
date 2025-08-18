@@ -3,7 +3,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'screens/scan_screen.dart';
 import 'screens/collection_screen.dart';
-import 'screens/adventure_selection_screen.dart';
 import 'screens/qr_scanner_screen.dart';
 import 'services/adventure_service.dart';
 
