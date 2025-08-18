@@ -28,7 +28,7 @@ jobs:
           cache: true
       - run: flutter --version
       - run: flutter pub get
-      - run: flutter build apk --debug --flavor unsigned
+      - run: flutter build apk --debug
 
   test:
     runs-on: ubuntu-latest

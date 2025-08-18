@@ -45,8 +45,8 @@ jobs:
           sed -i "s/^version: .*/version: ${NEW_VERSION}/" pubspec.yaml
 
           echo "Updated version from ${CURRENT_VERSION} to ${NEW_VERSION}"
-      - run: flutter build appbundle --flavor production
-      - run: flutter build apk --flavor production
+      - run: flutter build appbundle
+      - run: flutter build apk
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
