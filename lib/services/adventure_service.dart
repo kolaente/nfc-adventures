@@ -51,7 +51,10 @@ class AdventureService {
 
     // Get the adventure title from the available adventures
     final adventures = await fetchAvailableAdventures();
-    final adventure = adventures.firstWhere((a) => a.id == adventureId);
+    final adventure = adventures.where((a) => a.id == adventureId).firstOrNull;
+    if (adventure == null) {
+      throw Exception('Adventure with ID "$adventureId" not found');
+    }
     await setAdventureTitle(adventureId, adventure.title);
 
     final bytes = response.bodyBytes;

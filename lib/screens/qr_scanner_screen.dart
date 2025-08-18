@@ -20,7 +20,6 @@ class QrScannerScreen extends StatefulWidget {
 class _QrScannerScreenState extends State<QrScannerScreen> {
   final AdventureService _adventureService = AdventureService();
   bool _isProcessing = false;
-  String? _errorMessage;
   MobileScannerController? _controller;
 
   @override
@@ -40,7 +39,6 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     
     setState(() {
       _isProcessing = true;
-      _errorMessage = null;
     });
 
     try {
@@ -62,12 +60,19 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
       widget.onAdventureSelected(adventurePath);
     } catch (e) {
       if (!mounted) return;
+      
+      // Show error as toast
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+      
+      // Reset processing state and resume scanning
       setState(() {
-        _errorMessage = e.toString();
         _isProcessing = false;
       });
-      
-      // Resume scanning after error
       await _controller?.start();
     }
   }
@@ -80,24 +85,20 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
     final adventureId = barcode.rawValue;
     
     if (adventureId == null || adventureId.isEmpty) {
-      setState(() {
-        _errorMessage = AppLocalizations.of(context)?.errorInvalidQrCode ?? 'Invalid QR code';
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)?.errorInvalidQrCode ?? 'Invalid QR code'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
       return;
     }
 
-    // Stop scanner while processing
+    // Stop scanner while processing valid QR code
     await _controller?.stop();
     await _processQrCode(adventureId);
   }
 
-  void _retryScanning() {
-    setState(() {
-      _errorMessage = null;
-      _isProcessing = false;
-    });
-    _controller?.start();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +115,6 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
             Expanded(
               child: Stack(
                 children: [
-                  if (!_isProcessing)
                     MobileScanner(
                       controller: _controller,
                       onDetect: _onDetect,
@@ -124,7 +124,7 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                       child: CircularProgressIndicator(),
                     ),
                   // Overlay with instructions
-                  if (!_isProcessing && _errorMessage == null)
+                  if (!_isProcessing)
                     Positioned(
                       bottom: 100,
                       left: 20,
@@ -148,26 +148,6 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
                 ],
               ),
             ),
-            if (_errorMessage != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
-                color: Colors.red.withOpacity(0.1),
-                child: Column(
-                  children: [
-                    Text(
-                      _errorMessage!,
-                      style: TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton(
-                      onPressed: _retryScanning,
-                      child: Text(AppLocalizations.of(context)?.retryButton ?? 'Retry'),
-                    ),
-                  ],
-                ),
-              ),
           ],
         ),
       ),
