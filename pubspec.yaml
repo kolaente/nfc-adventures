@@ -64,7 +64,8 @@ flutter:
   uses-material-design: true
   generate: true
 
-#  assets:
+  assets:
+    - assets/tag_images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
