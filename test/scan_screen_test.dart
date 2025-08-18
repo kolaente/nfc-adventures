@@ -7,7 +7,8 @@ import 'package:nfc_adventures/models/nfc_tag.dart';
 
 void main() {
   group('ScanScreen Image Preview Tests', () {
-    testWidgets('TagImagePreviewDialog displays tag name', (WidgetTester tester) async {
+    testWidgets('TagImagePreviewDialog displays tag name',
+        (WidgetTester tester) async {
       final tag = ScannedNfcTag(
         uid: '32:b8:4e:d3',
         name: 'Test Tag',
@@ -36,7 +37,8 @@ void main() {
       expect(find.text('Tap to close'), findsOneWidget);
     });
 
-    testWidgets('TagImagePreviewDialog can be dismissed by tap', (WidgetTester tester) async {
+    testWidgets('TagImagePreviewDialog can be dismissed by tap',
+        (WidgetTester tester) async {
       final tag = ScannedNfcTag(
         uid: '32:b8:4e:d3',
         name: 'Test Tag',
@@ -84,7 +86,8 @@ void main() {
       expect(find.byType(TagImagePreviewDialog), findsNothing);
     });
 
-    testWidgets('TagImagePreviewDialog auto-dismisses after 4 seconds', (WidgetTester tester) async {
+    testWidgets('TagImagePreviewDialog auto-dismisses after 4 seconds',
+        (WidgetTester tester) async {
       final tag = ScannedNfcTag(
         uid: '32:b8:4e:d3',
         name: 'Test Tag',

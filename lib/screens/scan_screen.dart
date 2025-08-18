@@ -46,7 +46,7 @@ class _ScanScreenState extends State<ScanScreen> {
               setState(() {
                 _lastScannedTag = tag;
               });
-              
+
               // Show snackbar for accessibility
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
@@ -55,7 +55,7 @@ class _ScanScreenState extends State<ScanScreen> {
                   duration: const Duration(seconds: 2),
                 ),
               );
-              
+
               // Show image preview dialog
               _showTagImagePreview(tag);
             }

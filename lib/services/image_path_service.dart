@@ -13,7 +13,7 @@ class ImagePathService {
 
     for (final tagId in tagIds) {
       String? validPath;
-      
+
       // Check file system in adventure path
       for (final ext in _imageExtensions) {
         final path = '$adventurePath/images/$tagId$ext';
@@ -27,7 +27,7 @@ class ImagePathService {
           continue;
         }
       }
-      
+
       if (validPath != null) {
         _imagePathCache[tagId] = validPath;
       }
