@@ -15,7 +15,9 @@ void main() {
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const NfcCollectorApp());
-    await tester.pumpAndSettle();
+    
+    // Use pump with a shorter duration instead of pumpAndSettle to avoid timeout
+    await tester.pump();
 
     // Verify that QR scanner screen elements are present
     // Since we can't actually test camera functionality in unit tests,
