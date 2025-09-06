@@ -128,6 +128,24 @@ abstract class AppLocalizations {
   /// **'Hold your tag near the reader...'**
   String get scanInstructions;
 
+  /// Button text to start NFC scanning on iOS
+  ///
+  /// In en, this message translates to:
+  /// **'Start Scan'**
+  String get startScanButton;
+
+  /// Instructions shown on iOS scan screen before scanning
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the button below to scan for NFC tags'**
+  String get scanInstructionsIos;
+
+  /// Message shown while NFC scanning is in progress
+  ///
+  /// In en, this message translates to:
+  /// **'Scanning for NFC tags...'**
+  String get scanningInProgress;
+
   /// Instructions shown on QR scanner screen
   ///
   /// In en, this message translates to:

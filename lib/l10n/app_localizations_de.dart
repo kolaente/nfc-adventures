@@ -24,6 +24,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get scanInstructions => 'Halte deinen Tag an den Reader...';
 
   @override
+  String get startScanButton => 'Scan starten';
+
+  @override
+  String get scanInstructionsIos =>
+      'Tippe den Button unten an, um nach NFC-Tags zu scannen';
+
+  @override
+  String get scanningInProgress => 'Scanne nach NFC-Tags...';
+
+  @override
   String get qrScanInstructions =>
       'Richte die Kamera auf den QR-Code, um das Abenteuer zu scannen';
 
