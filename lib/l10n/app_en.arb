@@ -26,6 +26,21 @@
     "description": "Instructions shown on scan screen"
   },
 
+  "startScanButton": "Start Scan",
+  "@startScanButton": {
+    "description": "Button text to start NFC scanning on iOS"
+  },
+
+  "scanInstructionsIos": "Tap the button below to scan for NFC tags",
+  "@scanInstructionsIos": {
+    "description": "Instructions shown on iOS scan screen before scanning"
+  },
+
+  "scanningInProgress": "Scanning for NFC tags...",
+  "@scanningInProgress": {
+    "description": "Message shown while NFC scanning is in progress"
+  },
+
   "qrScanInstructions": "Point camera at QR code to scan adventure",
   "@qrScanInstructions": {
     "description": "Instructions shown on QR scanner screen"
