@@ -29,7 +29,7 @@ class _ScanScreenState extends State<ScanScreen> {
   void initState() {
     super.initState();
     _nfcService = NfcService(adventurePath: widget.adventurePath);
-    
+
     // Only start continuous scanning on Android
     if (!Platform.isIOS) {
       _startContinuousScanning();
@@ -74,7 +74,7 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<void> _startSingleScan() async {
     // iOS-specific single scan
     if (_isScanning) return;
-    
+
     setState(() {
       _isScanning = true;
     });
@@ -124,7 +124,7 @@ class _ScanScreenState extends State<ScanScreen> {
             // Show scan button only on iOS
             ElevatedButton.icon(
               onPressed: _isScanning ? null : _startSingleScan,
-              icon: _isScanning 
+              icon: _isScanning
                 ? const SizedBox(
                     width: 16,
                     height: 16,
@@ -137,7 +137,7 @@ class _ScanScreenState extends State<ScanScreen> {
             // Android: Show continuous scanning instructions
             Text(AppLocalizations.of(context)!.scanInstructions),
           ],
-          
+
           // Debug info (shown on all platforms)
           if (widget.debugMode && _lastScannedTag != null) ...[
             const SizedBox(height: 16),
