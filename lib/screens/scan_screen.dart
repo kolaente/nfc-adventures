@@ -89,8 +89,8 @@ class _ScanScreenState extends State<ScanScreen> {
             });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!
-                    .tagScannedSuccess(tag.name)),
+                content: Text(
+                    AppLocalizations.of(context)!.tagScannedSuccess(tag.name)),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -125,12 +125,12 @@ class _ScanScreenState extends State<ScanScreen> {
             ElevatedButton.icon(
               onPressed: _isScanning ? null : _startSingleScan,
               icon: _isScanning
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.nfc),
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.nfc),
               label: Text(AppLocalizations.of(context)!.startScanButton),
             ),
           ] else ...[
