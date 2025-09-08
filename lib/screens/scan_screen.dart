@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
 import '../l10n/app_localizations.dart';
 
 import '../models/nfc_tag.dart';
@@ -22,12 +23,17 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   late final NfcService _nfcService;
   ScannedNfcTag? _lastScannedTag;
+  bool _isScanning = false;
 
   @override
   void initState() {
     super.initState();
     _nfcService = NfcService(adventurePath: widget.adventurePath);
-    _startContinuousScanning();
+
+    // Only start continuous scanning on Android
+    if (!Platform.isIOS) {
+      _startContinuousScanning();
+    }
   }
 
   @override
@@ -37,7 +43,8 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> _startContinuousScanning() async {
-    while (mounted) {
+    // Only for Android - continuous scanning
+    while (mounted && !Platform.isIOS) {
       try {
         await _nfcService.readNfcTag(
           onTagScanned: (tag) {
@@ -64,13 +71,74 @@ class _ScanScreenState extends State<ScanScreen> {
     }
   }
 
+  Future<void> _startSingleScan() async {
+    // iOS-specific single scan
+    if (_isScanning) return;
+
+    setState(() {
+      _isScanning = true;
+    });
+
+    try {
+      await _nfcService.readNfcTag(
+        onTagScanned: (tag) {
+          if (mounted) {
+            setState(() {
+              _lastScannedTag = tag;
+              _isScanning = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    AppLocalizations.of(context)!.tagScannedSuccess(tag.name)),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+        nfcPrompt: AppLocalizations.of(context)!.nfcPrompt,
+        unknownTagName: AppLocalizations.of(context)!.unknownTag,
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isScanning = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(AppLocalizations.of(context)!.scanInstructions),
+          // Show appropriate instructions based on platform and scanning state
+          if (Platform.isIOS) ...[
+            if (_isScanning)
+              Text(AppLocalizations.of(context)!.scanningInProgress)
+            else
+              Text(AppLocalizations.of(context)!.scanInstructionsIos),
+            const SizedBox(height: 24),
+            // Show scan button only on iOS
+            ElevatedButton.icon(
+              onPressed: _isScanning ? null : _startSingleScan,
+              icon: _isScanning
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.nfc),
+              label: Text(AppLocalizations.of(context)!.startScanButton),
+            ),
+          ] else ...[
+            // Android: Show continuous scanning instructions
+            Text(AppLocalizations.of(context)!.scanInstructions),
+          ],
+
+          // Debug info (shown on all platforms)
           if (widget.debugMode && _lastScannedTag != null) ...[
             const SizedBox(height: 16),
             GestureDetector(

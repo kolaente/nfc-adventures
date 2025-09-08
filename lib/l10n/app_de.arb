@@ -1,11 +1,14 @@
 {
   "@@locale": "de",
-  
+
   "appTitle": "NFC Adventures",
   "bottomNavScan": "Scannen",
   "bottomNavCollection": "Sammlung",
   "adventureSelectionTitle": "Abenteuer auswählen",
   "scanInstructions": "Halte deinen Tag an den Reader...",
+  "startScanButton": "Scan starten",
+  "scanInstructionsIos": "Tippe den Button unten an, um nach NFC-Tags zu scannen",
+  "scanningInProgress": "Scanne nach NFC-Tags...",
   "qrScanInstructions": "Richte die Kamera auf den QR-Code, um das Abenteuer zu scannen",
   "tagScannedSuccess": "Tag gescannt: {tagName}",
   "nfcPrompt": "Halte dein Gerät an den NFC-Tag",
