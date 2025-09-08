@@ -29,7 +29,7 @@ class _ScanScreenState extends State<ScanScreen> {
   void initState() {
     super.initState();
     _nfcService = NfcService(adventurePath: widget.adventurePath);
-    
+
     // Only start continuous scanning on Android
     if (!Platform.isIOS) {
       _startContinuousScanning();
@@ -74,7 +74,7 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<void> _startSingleScan() async {
     // iOS-specific single scan
     if (_isScanning) return;
-    
+
     setState(() {
       _isScanning = true;
     });
@@ -89,8 +89,8 @@ class _ScanScreenState extends State<ScanScreen> {
             });
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocalizations.of(context)!
-                    .tagScannedSuccess(tag.name)),
+                content: Text(
+                    AppLocalizations.of(context)!.tagScannedSuccess(tag.name)),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -124,20 +124,20 @@ class _ScanScreenState extends State<ScanScreen> {
             // Show scan button only on iOS
             ElevatedButton.icon(
               onPressed: _isScanning ? null : _startSingleScan,
-              icon: _isScanning 
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.nfc),
+              icon: _isScanning
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.nfc),
               label: Text(AppLocalizations.of(context)!.startScanButton),
             ),
           ] else ...[
             // Android: Show continuous scanning instructions
             Text(AppLocalizations.of(context)!.scanInstructions),
           ],
-          
+
           // Debug info (shown on all platforms)
           if (widget.debugMode && _lastScannedTag != null) ...[
             const SizedBox(height: 16),
